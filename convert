@@ -1,0 +1,94 @@
+#include <cctype>
+#include <string>
+#include <iostream>
+using namespace std ;
+bool check(string a) {
+    for (int i = 0; i < a.length(); i++) {
+        if (!isdigit(a[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+int main() {
+    char exit = ' ';
+    while (exit != 'x') {
+        string text, an, bn, a, b , n;
+        int cut = 1;
+        while (cut == 1) {
+            cout << "Enter Op Mode : \n1. encryption.\n2. decryption.\n";
+            cin >> n;
+            if (n == "1" || n == "2") {
+                cut = 2;
+            } else {
+                cout << "Invalid input. Try again.\n";
+                cut = 1;
+            }
+        }
+        cin.ignore();
+        cout << "Enter a line of text> ";
+        getline(cin, text);
+        for (int i = 0; i < text.length(); i++) {
+            if (text[i] == ' ') {
+                text[i] = '_';
+            }
+        }
+        cout << "Enter key 1: ";
+        cin >> a;
+        while (!check(a)) {
+            cout << "Invalid key. Try again.\n";
+            cin.clear();
+            cin.ignore(256, '\n');
+            cout << "Enter key 1: ";
+            cin >> a;
+        }
+        cout << "Enter key 2: ";
+        cin >> b;
+        while (!check(b)) {
+            cout << "Invalid key. Try again.\n";
+            cin.clear();
+            cin.ignore(256, '\n');
+            cout << "Enter key 2: ";
+            cin >> b;
+        }
+        int len = a.length() * b.length();
+        int random[len];
+        for (int i = 0; i < a.length(); i++) {
+            for (int j = 0; j < b.length(); j++) {
+                an = a[i];
+                bn = b[j];
+                random[(i * b.length()) + j] = stoi(an) + stoi(bn);
+            }
+        }
+        switch (stoi(n)) {
+            case 1:
+                for (int i = 0; i < text.length(); i++) {
+                    int jump = (i < len) ? random[i] : random[i % len];
+                    jump = (jump % 4) + 1;
+                    text[i] += (i % 2 == 0) ? jump : -jump;
+                }
+                break;
+            case 2:
+                for (int i = 0; i < text.length(); i++) {
+                    int jump = (i < len) ? random[i] : random[i % len];
+                    jump = (jump % 4) + 1;
+                    text[i] += (i % 2 == 0) ? -jump : jump;
+                }
+                for (int i = 0; i < text.length(); i++) {
+                    if (text[i] == '_') {
+                        text[i] = ' ';
+                    }
+                }
+                break;
+        }
+        cout << "Processed text >" << text << "<\n\n";
+        CUT :
+        cout << "press \"x\" to end , \"c\" continue : " ;
+        cin >> exit ;
+        if(exit!='c' && exit!='x'){
+            goto CUT ;
+        }
+        system("CLS");
+    }
+    return 0;
+}
